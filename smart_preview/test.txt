@@ -1,0 +1,40 @@
+OAuth mail providers (Google) - Sending mails needs permission to send mail
+which we don't have today. We will prompt user of this when the first mail
+by existing users is sent. We could also attempt getting this auth in CM3
+itself, or in onboarding of CM4
+
+Not required, we have oauth for sending mails. It was a mistake we took
+oauth for both(imap+smtp) from day one, now it came in handy.
+
+
+> EWS - will work
+>
+> EAS - will work
+>
+> IMAP - popular ones have predictable SMTP servers therefore fine, but
+> generic IMAP (including Exchange) might not have predictable SMTP end points
+>
+> For Google - we will start taking sending mails Auth in CM3 itself from
+> today.
+>
+not relevant now, ref my reply above.
+
+
+>
+> Clients should be capable of handling sent mail error.
+>
+> IMAP folder access not enabled - incase All Mail / Trash (and maybe others
+> - MM to investigate further) is not enabled, the clients should be capable
+> of prompting with this error
+>
+
+We will share the details tomorrow
+
+
+>
+> Mail previews - we will show first x characters of the email as the
+> conversation. We will not  extract the inline text to show as conversation
+> in this version, we might in the future.
+>
+>
+>

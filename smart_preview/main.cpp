@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-int main() {
+void text_smart_preview() {
   std::ifstream in("test.txt");
 
   if (in.is_open()) {
@@ -46,4 +46,96 @@ int main() {
 
     std::cout << "\n================================\n";
   }
+}
+
+void html_smart_preview() {
+  // find the location of all "<blockquote>" as well as "</blockquote>"
+
+  std::ifstream ifs("test_html.txt");
+  std::string content( (std::istreambuf_iterator<char>(ifs)),
+                       (std::istreambuf_iterator<char>()));
+
+
+  std::cout << "\n================================\n";
+  std::cout << content << "\n";
+  std::cout << "\n================================\n";
+
+  std::vector<int> sbq;
+  std::vector<int> ebq;
+  
+  int i = 0;
+  while ((i = content.find("<blockquote", i)) !=  std::string::npos) {
+    sbq.push_back(i);
+    std::cout << "<blockquote> found in: " << i++ << "\n";
+  }
+  i = 0;
+  while ((i = content.find("</blockquote>", i)) !=  std::string::npos) {
+    ebq.push_back(i);
+    std::cout << "</blockquote> found in: " << i++ << "\n";
+  }
+
+  for(i = 0; i < sbq.size(); i++) {
+    std::cout << "<blockquote> found in: " << sbq.at(i) << "\n";
+  }
+  for(i = 0; i < ebq.size(); i++) {
+    std::cout << "</blockquote> found in: " << ebq.at(i) << "\n";
+  }
+
+  // logic to find the last blockquote 
+  int s = 0;
+  int e = 0;
+
+  int fs = 0;
+  int fe = 0;
+  int ss = 0;
+  if (sbq.size() == 0 || ebq.size() == 0) {
+    std::cout << "NOT FOUND\n";
+    return;
+  }
+  fs = sbq.at(s++);
+  fe = ebq.at(e++);
+
+  if (sbq.size() == 1) {
+    goto DONE;
+  }
+  ss = sbq.at(s++);
+
+  while (1) {
+    if (fe < ss) {
+      if (ebq.size() == e) {
+        break;
+      }
+      fe = ebq.at(e++);
+      fs = ss;
+      if (sbq.size() == s) {
+        break;
+      }
+      ss = sbq.at(s++);
+    } else {
+      if (sbq.size() == s) {
+        break;
+      }
+      ss = sbq.at(s++);
+      if (ss > fe) {
+        if (ebq.size() == e) {
+          break;
+        }
+        fe = ebq.at(e++);
+      }
+    }
+  }
+DONE:
+  // we need to check teh remaining buffer contains some VALUABLE text
+  // ie, don't remove 
+  // simple logic is to look for non HTML text after 'fe'
+  std::cout << "\n================================\n";
+  std::cout << "\n================================\n";
+  std::cout << fs << " --- " << fe << "\n";
+  std::cout << "\n================================\n";
+}
+
+int main() {
+  //text_smart_preview();
+  html_smart_preview();
+  return 0;
 }

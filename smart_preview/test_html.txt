@@ -1,0 +1,17 @@
+Hai<blockquote><div dir="ltr">OAuth mail providers (Google) - Sending mails needs permission to send mail which we don't have today. We will prompt user of this when the first mail by existing users is sent. We could also attempt getting this auth in CM3 itself, or in onboarding of CM4<div>
+
+<br></div><div>Not required, we have oauth for sending mails. It was a mistake we took oauth for both(imap+smtp) from day one, now it came in handy.</div><div><br></div><div><div class="gmail_extra"><div class="gmail_quote">
+
+<blockquote class="gmail_quote" style="margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"><div dir="ltr"><div>
+<br></div><div>EWS - will work</div><div><br></div><div>EAS - will work</div><div><br></div><div>IMAP - popular ones have predictable SMTP servers therefore fine, but generic IMAP (including Exchange) might not have predictable SMTP end points</div>
+
+
+<div><br></div><div>For Google - we will start taking sending mails Auth in CM3 itself from today.</div></div></blockquote><div>not relevant now, ref my reply above.</div><div> </div><blockquote class="gmail_quote" style="margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">
+
+<div dir="ltr"><div><br></div><div>Clients should be capable of handling sent mail error.</div><div><br>
+</div><div>IMAP folder access not enabled - incase All Mail / Trash (and maybe others - MM to investigate further) is not enabled, the clients should be capable of prompting with this error</div></div></blockquote><div><br>
+
+</div><div>We will share the details tomorrow</div><div> </div><blockquote class="gmail_quote" style="margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"><div dir="ltr"><div><br></div>
+<div>Mail previews - we will show first x characters of the email as the conversation. We will not  extract the inline text to show as conversation in this version, we might in the future.</div><div><br></div>
+<div><br></div></div>
+</blockquote></div><br></div></div></div></blockquote>

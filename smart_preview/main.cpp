@@ -95,6 +95,7 @@ void html_smart_preview() {
   fs = sbq.at(s++);
   fe = ebq.at(e++);
 
+  /*
   if (sbq.size() == 1) {
     goto DONE;
   }
@@ -124,6 +125,51 @@ void html_smart_preview() {
       }
     }
   }
+  */
+
+
+/////////////////////////////////////////////////////////
+
+  int bq_count = 1;
+  int ns = 1;
+
+  if (sbq.size() == 1) {
+    goto DONE;
+  }
+  ns = sbq.at(s++);
+  while (1) {
+    if (ns < fe) {
+      bq_count++;
+      if (sbq.size() == s) {
+        if (ebq.size() == e) {
+          break;
+        }
+        fe = ebq.at(e++);
+        break;
+      }
+      ns = sbq.at(s++);
+    } else {
+      bq_count--;
+      if (bq_count == 0) {
+        if (sbq.size() == s) {
+          break;
+        }
+        fs = sbq.at(s++);
+      }
+      if (ebq.size() == e) {
+        break;
+      }
+      fe = ebq.at(e++);
+    }
+  }
+
+
+
+
+
+/////////////////////////////////////////////////////////
+
+
 DONE:
   // we need to check teh remaining buffer contains some VALUABLE text
   // ie, don't remove 

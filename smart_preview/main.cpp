@@ -3,6 +3,10 @@
 #include <string>
 #include <vector>
 
+#include <QtCore>
+#include <time.h>
+#include "diff_match_patch.h"
+
 void text_smart_preview() {
   std::ifstream in("test.txt");
 
@@ -180,8 +184,92 @@ DONE:
   std::cout << "\n================================\n";
 }
 
+void text_diff() {
+#define OLD_MAIL "hi\n\
+This is a test mail\n\
+--\
+MM"
+
+#define NEW_MAIL "thanks\n\
+Manoj\n\
+hi\n\
+This is a test mail\n\
+test\n\
+--\
+MM"
+
+  diff_match_patch dmp;
+  
+#define FILE_FETCH
+//#define MACRO_FETCH
+
+#ifdef FILE_FETCH
+  std::ifstream ifs("oldmail.txt");
+  std::string oldmail( (std::istreambuf_iterator<char>(ifs)),
+                       (std::istreambuf_iterator<char>()));
+
+  std::ifstream ifs2("newmail.txt");
+  std::string newmail( (std::istreambuf_iterator<char>(ifs2)),
+                       (std::istreambuf_iterator<char>()));
+
+  QString str1 = QString(oldmail.c_str());
+  QString str2 = QString(newmail.c_str());
+#else
+#ifdef MACRO_FETCH
+  QString str1 = QString(OLD_MAIL);
+  QString str2 = QString(NEW_MAIL);
+#else
+  QString str1 = QString("a");
+  QString str2 = QString("d\na\nb\nc");
+#endif
+#endif
+  QList<Diff> diffs = dmp.diff_main(str1, str2);
+  //QPair<QString, QVector<bool> > out = dmp.patch_apply(dmp.patch_fromText(strPatch), str1);
+  //QString strResult = out.first;
+
+  std::string lastequalstr; 
+  foreach (Diff myDiff, diffs) {
+    lastequalstr = "";
+    if (myDiff.operation == INSERT) {
+      //qDebug("%s[INSERT]\n", qPrintable(myDiff.text));
+    } else if (myDiff.operation == DELETE) {
+      //qDebug("%s[DELETE]\n", qPrintable(myDiff.text));
+    } else {
+      //qDebug("%s[EQUAL]\n", qPrintable(myDiff.text));
+      lastequalstr = myDiff.text.toUtf8().data();
+    }
+  }
+
+  if (lastequalstr.length() == 0) {
+    qDebug("Failed to find a match in last\n");
+    return;
+  }
+
+  std::string src = str2.toUtf8().data();
+  char *ptr = (char*)src.c_str();
+  char *ptrold = (char*)src.c_str();
+  
+  char *prevptr = NULL;
+
+  while( (ptr = strstr(ptr, lastequalstr.c_str())))
+  {
+    // increment ptr here to prevent
+    // an infinite loop
+    prevptr = ptr++;
+  }
+  
+  char out[10240] = {0};
+
+  int size = prevptr-ptrold;
+
+  strncpy(out, src.c_str(), size);
+  printf("New text: \n%s\n", out);
+}
+
 int main() {
   //text_smart_preview();
-  html_smart_preview();
+  //html_smart_preview();
+
+  text_diff();
   return 0;
 }

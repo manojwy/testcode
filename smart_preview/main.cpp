@@ -184,6 +184,53 @@ DONE:
   std::cout << "\n================================\n";
 }
 
+bool is_signature(std::string str) {
+  // remove white spaces and compare if first two chars are hypen and followed by a new line, 
+  // it can have any number of white chars between this hypen and new line.
+
+  // remove all white chars
+  // compare new next bytes are -(hypen)
+  // remove all space(' ')
+  // compare next char is new line (May be we need to create an exception for html emails)
+  for (size_t i = 0; i < str.length(); i++) {
+    if (str[i] == ' ' || str[i] == '\n' || str[i] == '\t') {
+        str.erase(i, 1);
+        i--;
+    } else {
+      break;
+    }
+  }
+
+  if (str.length() == 0) {
+    return true;
+  }
+
+  if (strnicmp(str.c_str(), "--", 2) != 0) {
+    return false;
+  }
+
+  str.erase(0, 2);
+
+  for (size_t i = 0; i < str.length(); i++) {
+    if (str[i] == ' ' || str[i] == '\t') {
+        str.erase(i, 1);
+        i--;
+    } else {
+      break;
+    }
+  }
+
+  if (str.length() == 0) {
+    return true;
+  }
+
+  if (strnicmp(str.c_str(), "\n", 1) == 0) {
+    return true;
+  }
+
+  return false;
+}
+
 void text_diff() {
 #define OLD_MAIL "hi\n\
 This is a test mail\n\
@@ -228,21 +275,31 @@ MM"
   //QString strResult = out.first;
 
   std::string lastequalstr; 
+  std::string laststr; 
   foreach (Diff myDiff, diffs) {
-    lastequalstr = "";
+    laststr = "";
     if (myDiff.operation == INSERT) {
       //qDebug("%s[INSERT]\n", qPrintable(myDiff.text));
+      laststr = myDiff.text.toUtf8().data();
     } else if (myDiff.operation == DELETE) {
       //qDebug("%s[DELETE]\n", qPrintable(myDiff.text));
     } else {
       //qDebug("%s[EQUAL]\n", qPrintable(myDiff.text));
       lastequalstr = myDiff.text.toUtf8().data();
+      laststr = lastequalstr;
     }
   }
 
-  if (lastequalstr.length() == 0) {
+  if (laststr.length() == 0) {
     qDebug("Failed to find a match in last\n");
     return;
+  }
+
+  if (laststr != lastequalstr) { // check if laststr is a signature only
+    qDebug("Last INSERT buffer\n%s\n", laststr.c_str());
+    if (is_signature(laststr) == false) {
+      return;
+    }
   }
 
   std::string src = str2.toUtf8().data();

@@ -205,14 +205,24 @@ bool is_signature(std::string str) {
     return true;
   }
 
+  int s = 2;
   if (strnicmp(str.c_str(), "--", 2) != 0) {
-    return false;
+    s = 2;
+    if (strnicmp(str.c_str(), "**", 2) != 0) {
+      s = 7;
+      if (strnicmp(str.c_str(), "regards", 7) != 0) {
+        s = 6;
+        if (strnicmp(str.c_str(), "thanks", 6) != 0) {
+          return false;
+        }
+      }
+    }
   }
 
-  str.erase(0, 2);
+  str.erase(0, s);
 
   for (size_t i = 0; i < str.length(); i++) {
-    if (str[i] == ' ' || str[i] == '\t') {
+    if (str[i] == ' ' || str[i] == '\t' || str[i] == ',' || str[i] == '-') {
         str.erase(i, 1);
         i--;
     } else {

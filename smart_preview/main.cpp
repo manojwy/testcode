@@ -184,7 +184,10 @@ DONE:
   std::cout << "\n================================\n";
 }
 
-bool is_signature(std::string str) {
+bool is_signature(std::string str, bool is_html) {
+  if (is_html) {
+    // convert to text
+  }
   // remove white spaces and compare if first two chars are hypen and followed by a new line, 
   // it can have any number of white chars between this hypen and new line.
 
@@ -307,7 +310,7 @@ MM"
 
   if (laststr != lastequalstr) { // check if laststr is a signature only
     qDebug("Last INSERT buffer\n%s\n", laststr.c_str());
-    if (is_signature(laststr) == false) {
+    if (is_signature(laststr, false) == false) {
       return;
     }
   }
